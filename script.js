@@ -5,7 +5,7 @@ const firstImg = document.querySelectorAll('img')[0];
 
 
 let isDragStart = false, prevPageX, prevScrollLeft;
-let firstImgWidth = firstImg.clientWidth + 14;
+
 
 
 const showHideIcons = () => {
@@ -17,6 +17,7 @@ const showHideIcons = () => {
 
 arrowIcons.forEach(icon => {
     icon.addEventListener("click", () => {
+        let firstImgWidth = firstImg.clientWidth + 14;
         carousel.scrollLeft += icon.id == 'left' ? -firstImgWidth : firstImgWidth;
         setTimeout(() => showHideIcons(), 60);
     })
@@ -25,7 +26,7 @@ arrowIcons.forEach(icon => {
 const dragStart = (e) => {
     //oбновление значения глобальных переменных при событии нажатия мыши
     isDragStart = true;
-    prevPageX = e.pageX;
+    prevPageX = e.pageX || e.touches[0].pageX ;
     prevScrollLeft = carousel.scrollLeft;
 }
 
@@ -34,7 +35,7 @@ const dragging = (e) => {
     if(!isDragStart) return;
     e.preventDefault();
     carousel.classList.add('dragging');
-    let positionDiff = e.pageX - prevPageX;
+    let positionDiff = (e.pageX || e.touches[0].pageX) - prevPageX;
     carousel.scrollLeft = prevScrollLeft - positionDiff;
     showHideIcons();
 }
@@ -43,6 +44,7 @@ const dragging = (e) => {
 const dragStop = () => {
     isDragStart = false;
     carousel.classList.remove('dragging');
+    autoSlide();
 }
 
 carousel.addEventListener("mousedown", dragStart);
